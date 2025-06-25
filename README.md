@@ -6,7 +6,7 @@
 [Qirui Wu](https://qiruiw.github.io/), [Denys Iliash](), [Daniel Ritchie](https://dritchie.github.io/), [Manolis Savva](https://msavva.github.io/), [Angel X. Chang](http://angelxuanchang.github.io/)
 
 
-Preprint
+ICCV 2025
 
 [Website](https://3dlg-hcvc.github.io/diorama/) | [arXiv](https://arxiv.org/abs/2411.19492) 
 
