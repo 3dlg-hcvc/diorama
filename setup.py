@@ -1,0 +1,37 @@
+from setuptools import find_packages, setup
+
+setup(
+    name="diorama",
+    version="1.0",
+    author="diorama",
+    packages=find_packages(),
+    install_requires=[
+        "lightning", 
+        "wandb", 
+        "scipy", 
+        "scikit-image",
+        "hydra-core", 
+        "einops", 
+        "torch_redstone", 
+        "torchmetrics", 
+        "h5py", 
+        "scikit-learn",
+        "blenderproc",
+        "open3d",
+        "trimesh",
+        "pyrender",
+        "opencv-python",
+        "pygraphviz",
+        "openai",
+        "transformers",
+        "timm",
+        "supervision",
+        "pycocotools",
+        "plyfile",
+        "mmengine",
+        "mmcv-lite",
+        "python-fcl",
+        "pyglet==1.5.27",
+        "kornia"
+    ]
+)

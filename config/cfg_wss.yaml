@@ -1,0 +1,132 @@
+# Managed by Hydra
+
+hydra:
+  output_subdir: null
+  run:
+    dir: .
+
+root: ${hydra:runtime.cwd}
+exp_name: null
+exp_path: ${root}/output/${exp_name}
+
+# only for experiments
+refer_path:
+sg_path:
+pose_path:
+
+img_path: null
+data:
+  source: wss
+  path: ${root}/data/wss/scenes
+
+cad_pool:
+  objaverse_lvis:
+    is_required: False
+    metadata: ${root}/data/objaverse/objaverse_lvis_filtered.csv
+    ddclip_path: ${root}/data/objaverse/objaverse_lvis_ddclip_color.h5
+  fpmodels:
+    is_required: False
+    metadata: ${root}/data/fpmodels/fpmodels_retrieve_clean.csv
+    ddclip_path: ${root}/data/fpmodels/fpmodels_clean_ddclip_color.h5
+  wss:
+    is_required: False
+    metadata: ${root}/data/wss/wss_models.csv
+    ddclip_path: ${root}/data/wss/wss_ddclip_color.h5
+
+vlm:
+  model: gpt-4o
+  sun: False
+  verify_sun: False
+  sg: False
+  n_trials: 6
+
+use_gt_classes: False
+use_gt_objects: False
+use_gt_sg: False
+use_gt_shapes: False
+
+load_depth_model: False
+load_perception_model: False
+load_retrieval_model: False
+load_pose_model: False
+run_optimization: False
+
+depth_model:
+  metric3d:
+    _target_: diorama.model.Metric3D
+    encoder: vit_large
+
+perception_model:
+  sam_version: vit_h
+  sam_ckpt_path: ${root}/weights/sam_vit_h_4b8939.pth
+  sam2_cfg: sam2.1_hiera_l
+  sam2_ckpt_path: ${root}/weights/sam2.1_hiera_large.pt
+  owlv2_processor: google/owlv2-large-patch14-ensemble
+  owlv2_ckpt_path: google/owlv2-large-patch14-ensemble
+  grounding_dino:
+    _target_: groundingdino.util.inference.Model
+    model_config_path: ${root}/third_party/GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py
+    model_checkpoint_path: ${root}/weights/groundingdino_swint_ogc.pth
+  SCORE_THRESHOLD: 0.2
+  BOX_THRESHOLD: 0.25
+  TEXT_THRESHOLD: 0.25
+  NMS_THRESHOLD: 0.8
+  MIS_THRESHOLD: 0.8
+
+retrieval_model:
+  sim_thres: 0.2
+  num_txt_knn: 50
+  num_knn: 5
+  filename: sg_ret.json
+  use_caption: False
+  text_only: False
+  img_only: False
+  duoduoclip:
+    _target_: diorama.model.DuoduoCLIP.load_pretrained
+    pretrained_path: ${root}/weights/Four_1to6F_bs1600_LT6.ckpt
+
+pose_model:
+  plot_results: True
+  gigazsp:
+    _target_: diorama.model.GigaZSP
+    model_name: dinov2_vitl14
+    patch_size: 14
+    feat_layer: 17
+    n_ref: 180
+    num_correspondences: 50
+    sim_threshold: 0.5
+    take_best_view: False
+    ransac_threshold: 0.02
+    ransac_min_samples:
+    best_frame_mode: corresponding_feats_similarity
+    cad_pick: 0
+    max_chunk_size: 2
+    ist_net:
+      _target_: diorama.model.gigazsp.ist_net.ISTNet
+      model_name: resnet
+      descriptor_size: 256
+      backbone:
+        _target_: diorama.model.gigazsp.ist_net.ResNet
+        config:
+          n_heads: 0
+          input_dim: 3
+          input_size: 256
+          initial_dim: 128
+          block_dims: [128, 192, 256, 512]
+          descriptor_size: 256 # ${model.ist_net.descriptor_size}
+      regressor:
+        _target_: diorama.model.gigazsp.ist_net.Regressor
+        descriptor_size: 256 # ${model.ist_net.descriptor_size}
+        hidden_dim: 256
+        use_tanh_act: true
+        normalize_output: true
+      max_batch_size: 12
+    max_objs_per_forward: 2
+    ist_net_ckpt_path: ${root}/weights/ist_net.ckpt
+
+layout_optim:
+  arch_dir: 
+  arch_mask_dir:
+  base_lr: 0.01
+  cad_picks_path:
+  hypo:
