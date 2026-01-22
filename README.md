@@ -46,6 +46,17 @@ cd ..
 pip install -e .
 ```
 
+## Model Weights
+We use open-sourced pretrained model weights for different pipeline components:
+- [DINOv2](https://github.com/facebookresearch/dinov2) `dinov2_vitl14_pretrain.pth` for image patch features extraction.
+- [OWLv2](https://huggingface.co/google/owlv2-large-patch14-ensemble) `google/owlv2-large-patch14-ensemble` for open-world object detection.
+- [SAMv2](https://github.com/facebookresearch/sam2) `sam2.1_hiera_large.pt` for object segmentation.
+- [BiRefNet](https://github.com/ZhengPeng7/BiRefNet) `ZhengPeng7/BiRefNet` for dichotomous image segmentation.
+- [Metric3Dv2](https://github.com/YvanYin/Metric3D) `metric3d_vit_large` for metric depth estimation.
+- [DuoduoCLIP](https://github.com/3dlg-hcvc/DuoduoCLIP) `Four_1to6F_bs1600_LT6.ckpt` for CAD shape retrieval.
+- Additionally, we leverge a samll scale estimation model from [GigaPose](https://github.com/nv-nguyen/gigapose) that we provide [here](https://huggingface.co/datasets/3dlg-hcvc/diorama).
+
+
 ## Usage
 
 To have access to GPT4
@@ -79,7 +90,7 @@ python run.py exp_name=<exp_name> img_path=<img_path> run_optimization=True
 
 First, we need to obtain the dichotomous segmentation
 ```shell
-python demo/compute_dichotomous_segmentation.py --data_path <path_to_experiment> --output_path <path_to_experiment>
+python scripts/compute_dichotomous_segmentation.py --data_path <path_to_experiment> --output_path <path_to_experiment>
 ```
 
 In order to inpaint the images, you need to run ```third_party/Inpaint-Anything/remove_anything_masks_naive_predicted_seg.py``` for predicted segmentation or ```third_party/Inpaint-Anything/remove_anything_masks_naive.py``` for GT segmentation. Consider modifying and running the wrapper script for this matter
@@ -89,7 +100,7 @@ python third_party/Inpaint-Anything/wss_inference_naive.py
 
 Next, obtain the depth predictions by running 
 ```shell
-python demo/compute_inpainted_depth_metric3d.py --exp_path <path_to_experiment> --encoder vit_giant2 --intrinsics <supported dataset name or custom> --normals
+python scripts/compute_inpainted_depth_normal.py --exp_path <path_to_experiment> --encoder vit_giant2 --intrinsics <supported dataset name or custom> --normals
 ```
 
 We are now ready to run plane segmentation

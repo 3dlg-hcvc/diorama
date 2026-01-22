@@ -63,10 +63,6 @@ perception_model:
   sam2_ckpt_path: ${root}/weights/sam2.1_hiera_large.pt
   owlv2_processor: google/owlv2-large-patch14-ensemble
   owlv2_ckpt_path: google/owlv2-large-patch14-ensemble
-  grounding_dino:
-    _target_: groundingdino.util.inference.Model
-    model_config_path: ${root}/third_party/GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py
-    model_checkpoint_path: ${root}/weights/groundingdino_swint_ogc.pth
   SCORE_THRESHOLD: 0.2
   BOX_THRESHOLD: 0.25
   TEXT_THRESHOLD: 0.25
